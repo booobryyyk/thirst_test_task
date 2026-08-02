@@ -1,6 +1,7 @@
 import { getAmplifyDataClientConfig } from '@aws-amplify/backend/function/runtime';
 import { Amplify } from 'aws-amplify';
 import { generateClient } from 'aws-amplify/data';
+import type { PostAuthenticationTriggerHandler } from 'aws-lambda';
 import type { PostConfirmationTriggerHandler } from 'aws-lambda';
 import type { Schema } from '../../data/resource';
 
@@ -20,8 +21,15 @@ Amplify.configure(resourceConfig, libraryOptions);
 
 const client = generateClient<Schema>();
 
-export const handler: PostConfirmationTriggerHandler = async (event) => {
-  if (event.triggerSource !== 'PostConfirmation_ConfirmSignUp') {
+type ProfileProvisionEvent =
+  | Parameters<PostConfirmationTriggerHandler>[0]
+  | Parameters<PostAuthenticationTriggerHandler>[0];
+
+export const handler = async (event: ProfileProvisionEvent) => {
+  if (
+    event.triggerSource !== 'PostConfirmation_ConfirmSignUp' &&
+    event.triggerSource !== 'PostAuthentication_Authentication'
+  ) {
     return event;
   }
 
@@ -32,7 +40,7 @@ export const handler: PostConfirmationTriggerHandler = async (event) => {
   }
 
   const { data: existingUser, errors: getErrors } =
-    await client.models.User.get({ id: sub });
+    await client.models.User.get({ id: sub }, { authMode: 'iam' });
 
   if (getErrors) {
     throw new Error(getErrors.map((error) => error.message).join('; '));
@@ -42,10 +50,13 @@ export const handler: PostConfirmationTriggerHandler = async (event) => {
     return event;
   }
 
-  const { errors } = await client.models.User.create({
-    id: sub,
-    displayName,
-  });
+  const { errors } = await client.models.User.create(
+    {
+      id: sub,
+      displayName,
+    },
+    { authMode: 'iam' }
+  );
 
   if (errors) {
     throw new Error(errors.map((error) => error.message).join('; '));

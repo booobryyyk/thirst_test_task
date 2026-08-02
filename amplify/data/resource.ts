@@ -5,7 +5,6 @@ const schema = a
   .schema({
     User: a
       .model({
-        // The profile ID is the owning Cognito user's `sub` claim.
         id: a.id().required(),
         displayName: a.string().required(),
         description: a.string(),
@@ -26,17 +25,17 @@ const schema = a
       .model({
         content: a.string().required(),
         authorId: a.id().required(),
-        // A shared partition key makes the public chronological feed queryable.
-        feedScope: a.string().required(),
-        // Set by the client in this MVP; used as the chronological index sort key.
+        // A fixed partition key to support querying the global feed by time.
+        feedPartition: a.string().required(),
         publishedAt: a.datetime().required(),
+        likeCount: a.integer(),
         author: a.belongsTo('User', 'authorId'),
         likes: a.hasMany('UserLike', 'postId'),
       })
       .secondaryIndexes((index) => [
-        index('feedScope')
+        index('feedPartition')
           .sortKeys(['publishedAt'])
-          .queryField('listPostsByFeedScopeAndPublishedAt'),
+          .queryField('listPostsByFeedPartitionAndPublishedAt'),
         index('authorId')
           .sortKeys(['publishedAt'])
           .queryField('listPostsByAuthorIdAndPublishedAt'),
@@ -64,7 +63,9 @@ const schema = a
           .to(['create', 'delete']),
       ]),
   })
-  .authorization((allow) => [allow.resource(postConfirmation).to(['mutate'])]);
+  .authorization((allow) => [
+    allow.resource(postConfirmation).to(['query', 'mutate']),
+  ]);
 
 export type Schema = ClientSchema<typeof schema>;
 
