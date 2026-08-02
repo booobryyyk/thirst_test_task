@@ -3,6 +3,7 @@ backend:
   phases:
     build:
       commands:
+        - npm install -g pnpm@11.9.0
         - pnpm install --frozen-lockfile --store-dir .pnpm-store
         - pnpm exec ampx pipeline-deploy --branch $AWS_BRANCH --app-id $AWS_APP_ID
 frontend:
