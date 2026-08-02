@@ -1,4 +1,5 @@
 import { defineAuth } from '@aws-amplify/backend';
+import { postConfirmation } from './post-confirmation/resource';
 
 /**
  * Define and configure your auth resource
@@ -7,5 +8,22 @@ import { defineAuth } from '@aws-amplify/backend';
 export const auth = defineAuth({
   loginWith: {
     email: true,
+  },
+  userAttributes: {
+    givenName: {
+      mutable: true,
+      required: true,
+    },
+    birthdate: {
+      mutable: true,
+      required: false,
+    },
+    gender: {
+      mutable: true,
+      required: false,
+    },
+  },
+  triggers: {
+    postConfirmation,
   },
 });

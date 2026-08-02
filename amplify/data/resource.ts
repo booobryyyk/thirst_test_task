@@ -1,4 +1,5 @@
 import { type ClientSchema, a, defineData } from '@aws-amplify/backend';
+import { postConfirmation } from '../auth/post-confirmation/resource';
 
 const schema = a.schema({
   Gender: a.enum(['MALE', 'FEMALE', 'OTHER', 'PREFER_NOT_TO_SAY']),
@@ -56,7 +57,7 @@ const schema = a.schema({
         .identityClaim('sub')
         .to(['create', 'delete']),
     ]),
-})
+}).authorization((allow) => [allow.resource(postConfirmation).to(['mutate'])]);;
 
 export type Schema = ClientSchema<typeof schema>;
 
