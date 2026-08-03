@@ -4,6 +4,10 @@ Postly is a small social feed built with Next.js and AWS Amplify. Guests can
 read the public feed; authenticated users can publish posts, like posts, and
 view profiles.
 
+Website url: https://main.d2c3qyiegl9po0.amplifyapp.com/
+
+> Note: Codex was used to assist with this application's development.
+
 ## Prerequisites
 
 - Node.js 20.12 or newer
@@ -134,8 +138,6 @@ profile navigation, post likes, and sign out.
   `cognito-idp:AdminConfirmSignUp` on that sandbox's Cognito user pool.
 - Use a disposable sandbox user: the tests create posts and likes, and the
   sign-up test creates a new Cognito user per run.
-
-For additional Cypress details, see [cypress/README.md](cypress/README.md).
 
 ## Component tests
 
