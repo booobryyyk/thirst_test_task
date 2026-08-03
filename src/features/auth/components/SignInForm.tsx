@@ -9,7 +9,10 @@ import { Input } from '@/components/ui/input';
 import { amplifyClient } from '@/lib/amplify-client';
 import { FormField } from '@/components/ui/formField';
 import { FormError } from '@/components/ui/formError';
-import { confirmationHref } from '@/features/auth/utils';
+import {
+  confirmationHref,
+  normalizeAuthErrorMessage,
+} from '@/features/auth/utils';
 
 type Props = {
   email: string;
