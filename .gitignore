@@ -39,3 +39,16 @@ next-env.d.ts
 .amplify
 amplify_outputs*
 amplifyconfiguration*
+
+# Playwright
+node_modules/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/
+
+# Cypress generated artifacts
+/cypress/screenshots/
+/cypress/videos/
+/cypress/downloads/
