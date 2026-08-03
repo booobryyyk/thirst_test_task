@@ -1,5 +1,6 @@
 import { type ClientSchema, a, defineData } from '@aws-amplify/backend';
 import { postConfirmation } from '../auth/post-confirmation/resource';
+import { recentFeed } from './recent-feed/resource';
 import { toggleLike } from './toggle-like/resource';
 
 const schema = a
@@ -90,6 +91,13 @@ const schema = a
       nextToken: a.string(),
     }),
 
+    listRecentFeed: a
+      .query()
+      .arguments({ nextToken: a.string() })
+      .returns(a.ref('RecentFeedPage'))
+      .authorization((allow) => [allow.guest(), allow.authenticated()])
+      .handler(a.handler.function(recentFeed)),
+
     toggleLike: a
       .mutation()
       .arguments({ postId: a.id().required() })
@@ -99,6 +107,7 @@ const schema = a
   })
   .authorization((allow) => [
     allow.resource(postConfirmation).to(['query', 'mutate']),
+    allow.resource(recentFeed).to(['query', 'mutate']),
     allow.resource(toggleLike).to(['query', 'mutate']),
   ]);
 
