@@ -30,10 +30,23 @@ export function AuthNav({ compact = false }: { compact?: boolean }) {
         )}
       >
         {!compact && (
-          <div className="mb-3 flex items-center gap-2 text-sm font-medium">
+          <Link
+            href="/me"
+            className="mb-3 flex items-center gap-2 text-sm font-medium hover:underline"
+          >
             <UserRound className="size-4" aria-hidden="true" />
             <span className="truncate">{user.displayName}</span>
-          </div>
+          </Link>
+        )}
+
+        {compact && (
+          <Link
+            href="/me"
+            className={buttonVariants({ variant: 'outline', size: 'icon-sm' })}
+            aria-label="Your profile"
+          >
+            <UserRound className="size-4" aria-hidden="true" />
+          </Link>
         )}
 
         <Button

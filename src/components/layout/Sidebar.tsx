@@ -1,10 +1,15 @@
+'use client';
+
 import Link from 'next/link';
-import { Feather, Home } from 'lucide-react';
+import { usePathname } from 'next/navigation';
+import { Feather, Home, UserRound } from 'lucide-react';
 
 import { AuthNav } from '@/features/auth/components/AuthNav';
 import { cn } from '@/lib/utils';
 
 export function Sidebar() {
+  const pathname = usePathname();
+
   return (
     <aside className="sticky top-0 hidden h-svh border-r px-5 py-6 md:flex md:flex-col">
       <Link href="/" className="flex items-center gap-2 text-lg font-semibold">
@@ -14,9 +19,21 @@ export function Sidebar() {
         Thirst
       </Link>
 
-      <nav className="mt-10 space-y-1" aria-label="Primary navigation">
-        <NavLink href="/" icon={<Home className="size-5" />}>
+      <nav className="mt-10 space-y-2" aria-label="Primary navigation">
+        <NavLink
+          href="/"
+          icon={<Home className="size-5" />}
+          active={pathname === '/'}
+        >
           Feed
+        </NavLink>
+
+        <NavLink
+          href="/me"
+          icon={<UserRound className="size-5" />}
+          active={pathname === '/me'}
+        >
+          Profile
         </NavLink>
       </nav>
 
@@ -31,17 +48,22 @@ function NavLink({
   href,
   icon,
   children,
+  active,
 }: {
   href: string;
   icon: React.ReactNode;
   children: React.ReactNode;
+  active: boolean;
 }) {
   return (
     <Link
       href={href}
+      aria-current={active ? 'page' : undefined}
       className={cn(
         'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors',
-        'bg-muted text-foreground hover:bg-muted/70'
+        active
+          ? 'bg-muted text-foreground'
+          : 'hover:bg-muted/70 hover:text-foreground'
       )}
     >
       {icon}
