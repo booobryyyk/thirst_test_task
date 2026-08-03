@@ -8,15 +8,13 @@ backend:
         - pnpm exec ampx pipeline-deploy --branch $AWS_BRANCH --app-id $AWS_APP_ID
 frontend:
   phases:
+    preBuild:
+      commands:
+        - pnpm install --frozen-lockfile
     build:
       commands:
         - pnpm run build
   artifacts:
     baseDirectory: .next
     files:
-      - "**/*"
-  cache:
-    paths:
-      - .next/cache/**/*
-      - .pnpm-store/**/*
-      - node_modules/**/*
+      - '**/*'
