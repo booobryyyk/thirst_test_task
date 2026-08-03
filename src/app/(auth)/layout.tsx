@@ -12,7 +12,7 @@ export default function AuthLayout({
           href="/"
           className="text-lg font-semibold tracking-tight hover:underline"
         >
-          Thirst
+          Postly
         </Link>
 
         {children}

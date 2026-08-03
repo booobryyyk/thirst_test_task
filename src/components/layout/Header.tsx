@@ -11,7 +11,7 @@ export function Header() {
           <span className="grid size-8 place-items-center rounded-full bg-primary text-primary-foreground">
             <Feather className="size-4" aria-hidden="true" />
           </span>
-          Thirst
+          Postly
         </Link>
 
         <AuthNav compact />

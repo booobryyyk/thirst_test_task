@@ -14,7 +14,7 @@ const fontMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Thirst',
+  title: 'Postly',
   description: 'A small public social feed.',
 };
 

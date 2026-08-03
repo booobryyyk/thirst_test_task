@@ -16,7 +16,7 @@ export function Sidebar() {
         <span className="grid size-9 place-items-center rounded-full bg-primary text-primary-foreground">
           <Feather className="size-4" aria-hidden="true" />
         </span>
-        Thirst
+        Postly
       </Link>
 
       <nav className="mt-10 space-y-2" aria-label="Primary navigation">
