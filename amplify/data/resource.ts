@@ -1,5 +1,6 @@
 import { type ClientSchema, a, defineData } from '@aws-amplify/backend';
 import { postConfirmation } from '../auth/post-confirmation/resource';
+import { toggleLike } from './toggle-like/resource';
 
 const schema = a
   .schema({
@@ -62,9 +63,43 @@ const schema = a
           .identityClaim('sub')
           .to(['create', 'delete']),
       ]),
+
+    ToggleLikeResult: a.customType({
+      liked: a.boolean().required(),
+      likeCount: a.integer().required(),
+    }),
+
+    FeedAuthor: a.customType({
+      id: a.id().required(),
+      displayName: a.string().required(),
+      description: a.string(),
+      avatarPath: a.string(),
+    }),
+
+    FeedPost: a.customType({
+      id: a.id().required(),
+      content: a.string().required(),
+      publishedAt: a.datetime().required(),
+      author: a.ref('FeedAuthor').required(),
+      likeCount: a.integer().required(),
+      likedByCurrentUser: a.boolean().required(),
+    }),
+
+    RecentFeedPage: a.customType({
+      items: a.ref('FeedPost').array().required(),
+      nextToken: a.string(),
+    }),
+
+    toggleLike: a
+      .mutation()
+      .arguments({ postId: a.id().required() })
+      .returns(a.ref('ToggleLikeResult'))
+      .authorization((allow) => [allow.authenticated()])
+      .handler(a.handler.function(toggleLike)),
   })
   .authorization((allow) => [
     allow.resource(postConfirmation).to(['query', 'mutate']),
+    allow.resource(toggleLike).to(['query', 'mutate']),
   ]);
 
 export type Schema = ClientSchema<typeof schema>;
