@@ -63,6 +63,70 @@ export function useLoadUser(userId: string) {
     isLoadingMore,
     loadUser,
     loadMore,
+    updateAvatarPath: (avatarPath: string) => {
+      setProfile((current) => (current ? { ...current, avatarPath } : current));
+      setPosts((current) =>
+        current.map((post) =>
+          post.author.id === userId
+            ? { ...post, author: { ...post.author, avatarPath } }
+            : post
+        )
+      );
+    },
+  };
+}
+
+export function useLoadLikedPosts(userId: string) {
+  const [posts, setPosts] = useState<PublicPost[]>([]);
+  const [nextToken, setNextToken] = useState<string | null>();
+  const [error, setError] = useState<string>();
+  const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+
+  const loadInitial = useCallback(async () => {
+    setIsLoading(true);
+    setError(undefined);
+
+    try {
+      const page = await postsService.listLikedByUser(userId);
+      setPosts(page.items);
+      setNextToken(page.nextToken);
+    } catch (cause) {
+      setError(messageFrom(cause));
+    } finally {
+      setIsLoading(false);
+    }
+  }, [userId]);
+
+  useEffect(() => {
+    void loadInitial();
+  }, [loadInitial]);
+
+  const loadMore = useCallback(async () => {
+    if (!nextToken) return;
+
+    setIsLoadingMore(true);
+    setError(undefined);
+
+    try {
+      const page = await postsService.listLikedByUser(userId, nextToken);
+      setPosts((current) => [...current, ...page.items]);
+      setNextToken(page.nextToken);
+    } catch (cause) {
+      setError(messageFrom(cause));
+    } finally {
+      setIsLoadingMore(false);
+    }
+  }, [nextToken, userId]);
+
+  return {
+    posts,
+    nextToken,
+    error,
+    isLoading,
+    isLoadingMore,
+    loadInitial,
+    loadMore,
   };
 }
 

@@ -1,7 +1,8 @@
 import Link from 'next/link';
-import { Heart } from 'lucide-react';
 
+import { useAuth } from '@/features/auth/providers/AuthProvider';
 import { ProfileAvatar } from '@/features/users/components/ProfileAvatar';
+import { LikeButton } from '@/features/posts/components/LikeButton';
 import {
   Card,
   CardContent,
@@ -12,6 +13,7 @@ import type { PublicPost } from '@/features/posts/posts.api';
 import { formatPostDate } from '@/features/posts/utils';
 
 export function PostCard({ post }: { post: PublicPost }) {
+  const { user } = useAuth();
   const author = post.author;
   const authorName = author.displayName;
 
@@ -51,12 +53,13 @@ export function PostCard({ post }: { post: PublicPost }) {
           </p>
         </CardContent>
 
-        <CardFooter className="gap-1 text-muted-foreground">
-          <Heart className="size-4" aria-hidden="true" />
-
-          <span>{post.likeCount}</span>
-
-          <span className="sr-only">likes</span>
+        <CardFooter className="text-muted-foreground">
+          <LikeButton
+            key={`${post.id}-${user?.id ?? 'guest'}`}
+            postId={post.id}
+            likeCount={post.likeCount}
+            initialLiked={post.likedByCurrentUser}
+          />
         </CardFooter>
       </Card>
     </article>
